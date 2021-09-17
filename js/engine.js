@@ -34,8 +34,8 @@ class SceneManager {
   }
 
   init() {
-    this.canvas = window.engine.canvas;
     this.ctx = window.engine.ctx;
+    this.canvas = this.ctx.canvas;
     window.requestAnimationFrame(this.update);
 
     console.log("Scene Manager initialized.");

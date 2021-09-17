@@ -25,6 +25,18 @@ function init() {
   window.engine.sceneManager.loadSingle(new MainMenu());
 }
 
+function fixAspectRatio() {
+  if (!window.engine) {
+    return console.error("Couldn't fix aspect ratio on non-existent game.");
+  }
+
+  window.engine.canvas.width = window.innerWidth;
+  window.engine.canvas.height = window.innerHeight;
+}
+
 window.onload = () => {
   bind(document.getElementById('canvas'));
+  fixAspectRatio();
 };
+
+window.onresize = fixAspectRatio;
