@@ -30,8 +30,16 @@ function fixAspectRatio() {
     return console.error("Couldn't fix aspect ratio on non-existent game.");
   }
 
-  window.engine.canvas.width = window.innerWidth;
-  window.engine.canvas.height = 9*window.innerWidth/16;
+  var w = window.innerWidth;
+  var h = 9.0 * window.innerWidth / 16.0;
+
+  if (h > window.innerHeight) {
+    w = 16.0 * window.innerHeight / 9.0;
+    h = window.innerHeight;
+  }
+
+  window.engine.canvas.width = w + 1;
+  window.engine.canvas.height = h;
 }
 
 window.onload = () => {
