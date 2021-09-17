@@ -31,7 +31,7 @@ function fixAspectRatio() {
   }
 
   window.engine.canvas.width = window.innerWidth;
-  window.engine.canvas.height = window.innerHeight;
+  window.engine.canvas.height = 9*window.innerWidth/16;
 }
 
 window.onload = () => {
