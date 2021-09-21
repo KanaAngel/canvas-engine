@@ -22,10 +22,12 @@ class TestScene extends Scene {
   constructor() {
     super();
 
-    this.moving = new Array();
-    this.moving.push(new MovingObject());
+    var input = new ArrowInput();
 
-    this.inputDebug = new ArrowInputDebug(new ArrowInput());
+    this.moving = new Array();
+    this.moving.push(new MovingObject(input));
+
+    this.inputDebug = new ArrowInputDebug(input);
   }
 
   update(ctx, step) {
@@ -101,8 +103,11 @@ class ArrowInputDebug {
 
 class MovingObject {
   position = new Vector2(50, 50);
-  input = new ArrowInput();
   size = 10;
+
+  constructor(input) {
+    this.input = input;
+  }
 
   update(ctx, step) {
     this.updatePosition();
@@ -113,7 +118,7 @@ class MovingObject {
 
   updatePosition() {
     var v = this.getInputVector();
-    //this.position = this.position.add(v);
+    this.position = this.position.add(v);
   }
 
   getInputVector() {
