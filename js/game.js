@@ -13,115 +13,42 @@ class MainMenu extends Scene {
 class TestScene extends Scene {
   moving;
 
-  pointOne;
-  pointTwo;
-
   draw = false;
 
   compareToStep;
 
+  inputDebug;
+
   constructor() {
     super();
-
-    alert("Using your left and right mouse buttons, set two points to draw a line between them.\n\nTry getting the line to cross the red square!");
 
     this.moving = new Array();
     this.moving.push(new MovingObject());
 
-    this.pointOne = new Point("green");
-    this.pointTwo = new Point("blue");
-
-    engine.canvas.addEventListener("mousedown", (e) => {
-      e.preventDefault();
-
-      var rect = e.target.getBoundingClientRect();
-      var x = e.clientX - rect.left;
-      var y = e.clientY - rect.top;
-      var position = new Vector2(x, y);
-
-      if (e.button == 0) this.pointOne.position = position;
-      if (e.button == 2) this.pointTwo.position = position;
-
-      if (this.pointOne.position.x >= 0 && this.pointTwo.position.y >= 0) this.draw = true;
-    });
+    this.inputDebug = new ArrowInputDebug(new ArrowInput());
   }
 
   update(ctx, step) {
     ctx.fillStyle = `white`;
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    this.pointOne.update(ctx, step);
-    this.pointTwo.update(ctx, step);
-
-    if (!this.draw) this.compareToStep = step;
-
-    if (this.pointOne.position.x != -1 && this.pointTwo.position.x != -1) {
-      ctx.fillStyle = this.draw ? "black" : "green";
-      ctx.beginPath();
-      ctx.moveTo(this.pointOne.position.x, this.pointOne.position.y);
-
-      if (!this.draw) {
-        ctx.lineTo(this.pointTwo.position.x, this.pointTwo.position.y);
-      } else {
-        var distance = this.pointOne.position.distanceTo(this.pointTwo.position);
-        var deltaStep = this.pointTwo.position.subtract(this.pointOne.position).divideBy(distance * 60);
-
-        var x = this.pointOne.position.x + ((step - this.compareToStep) % (distance * 60) * deltaStep.x);
-        var y = this.pointOne.position.y + ((step - this.compareToStep) % (distance * 60) * deltaStep.y);
-
-        ctx.lineTo(x, y);
-
-        if (
-          x > this.moving[0].position.x - (this.moving[0].size / 2) &&
-          x < this.moving[0].position.x + (this.moving[0].size / 2) &&
-          y > this.moving[0].position.y - (this.moving[0].size / 2) &&
-          y < this.moving[0].position.y + (this.moving[0].size / 2)
-        ) {
-          alert("The line crossed the square!");
-        }
-
-        if (step - this.compareToStep > distance * 59) {
-          this.draw = false;
-        }
-      }
-
-      ctx.stroke();
-    }
-
     for (var i = 0; i < this.moving.length; i++) {
       this.moving[i].update(ctx, step);
     }
+
+    this.inputDebug.update(ctx, step);
   }
 }
 
-class Point {
-  position = new Vector2(-1, -1);
-  color;
-
-  constructor(color) {
-    this.color = color;
-  }
-
-  update(ctx, step) {
-    if (this.position.x == -1 && this.position.y == -1) return;
-
-    ctx.fillStyle = this.color;
-    ctx.beginPath();
-    ctx.arc(this.position.x, this.position.y, 2, 0, Math.PI * 2, true);
-    ctx.fill();
-
-    ctx.font = "16px sans-serif";
-    ctx.fillText(this.position.toString(), this.position.x + 10, this.position.y + 10);
-  }
-}
-
-class ArrowInput {
+class ArrowInput extends Input {
   up = 0;
   down = 0;
   right = 0;
   left = 0;
 
   constructor() {
+    super();
+
     document.addEventListener("keydown", (e) => {
       if (e.keyCode == 38) this.up = 1;
       if (e.keyCode == 40) this.down = 1;
@@ -135,6 +62,40 @@ class ArrowInput {
       if (e.keyCode == 37) this.left = 0;
       if (e.keyCode == 39) this.right = 0;
     });
+  }
+}
+
+class ArrowInputDebug {
+  viewportPosition = new Vector2(0, 0);
+  input;
+
+  constructor(input) {
+    if (!(input instanceof ArrowInput)) {
+      return console.error("Cannot debug non-ArrowInput class.");
+    }
+
+    this.input = input;
+  }
+
+  update(ctx, step) {
+    this.viewportPosition.x = 10;
+    this.viewportPosition.y = ctx.canvas.height - 60;
+
+    // Up key
+    ctx.fillStyle = `rgb(${this.input.up * 255},0,0)`;
+    ctx.fillRect(this.viewportPosition.x + 70, this.viewportPosition.y - 60, 60, 50);
+
+    // Left key
+    ctx.fillStyle = `rgb(${this.input.left * 255},0,0)`;
+    ctx.fillRect(this.viewportPosition.x, this.viewportPosition.y, 60, 50);
+
+    // Down key
+    ctx.fillStyle = `rgb(${this.input.down * 255},0,0)`;
+    ctx.fillRect(this.viewportPosition.x + 70, this.viewportPosition.y, 60, 50);
+
+    // Right key
+    ctx.fillStyle = `rgb(${this.input.right * 255},0,0)`;
+    ctx.fillRect(this.viewportPosition.x + 140, this.viewportPosition.y, 60, 50);
   }
 }
 

@@ -59,6 +59,8 @@ class Vector2 {
   }
 }
 
+class Input { }
+
 class SceneManager {
   loadedScenes = [];
   canvas = null;
