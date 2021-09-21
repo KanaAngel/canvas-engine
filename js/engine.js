@@ -24,6 +24,41 @@ class Scene {
   }
 }
 
+class Vector2 {
+  x = 0;
+  y = 0;
+
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  add(v) {
+    if (!(v instanceof Vector2)) return console.error("Cannot combine vector and non-vector.");
+
+    return new Vector2(this.x + v.x, this.y + v.y);
+  }
+
+  distanceTo(v) {
+    var w = Math.abs(this.x - v.x);
+    var h = Math.abs(this.y - v.y);
+
+    return Math.sqrt(w + h);
+  }
+
+  divideBy(a) {
+    return new Vector2(this.x / a, this.y / a);
+  }
+
+  subtract(v) {
+    return new Vector2(this.x - v.x, this.y - v.y);
+  }
+
+  toString() {
+    return `(${this.x},${this.y})`;
+  }
+}
+
 class SceneManager {
   loadedScenes = [];
   canvas = null;
@@ -42,8 +77,8 @@ class SceneManager {
   }
 
   update = (step) => {
-    this.ctx.fillStyle = 'black';
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    /*this.ctx.fillStyle = 'black';
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);*/
 
     this.loadedScenes.forEach((scene) => {
       scene.update(this.ctx, step);
@@ -85,6 +120,9 @@ class Engine {
 
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
+
+    // Prevent context menu from opening.
+    this.canvas.oncontextmenu = () => { return false };
 
     this.sceneManager = new SceneManager();
   }
