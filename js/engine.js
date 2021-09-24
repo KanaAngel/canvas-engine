@@ -24,6 +24,20 @@ class Scene {
   }
 }
 
+class GameObject {
+  children = new Array();
+
+  update(ctx, step) {
+    children.forEach((obj) => {
+      obj.update(ctx, step);
+    });
+  }
+
+  addChild(obj) {
+    children.push(obj);
+  }
+}
+
 class Vector2 {
   x = 0;
   y = 0;
