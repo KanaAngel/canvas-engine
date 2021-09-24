@@ -1,9 +1,8 @@
 class Scene {
   loaded = false;
+  gameObjects = new Array();
 
-  constructor() {
-
-  }
+  constructor() {}
 
   update(ctx) {
     if (!this.loaded) return;
