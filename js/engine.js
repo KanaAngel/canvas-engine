@@ -75,6 +75,31 @@ class Vector2 {
 
 class Input { }
 
+class ArrowInput extends Input {
+  up = 0;
+  down = 0;
+  right = 0;
+  left = 0;
+
+  constructor() {
+    super();
+
+    document.addEventListener("keydown", (e) => {
+      if (e.keyCode == 38) this.up = 1;
+      if (e.keyCode == 40) this.down = 1;
+      if (e.keyCode == 37) this.left = 1;
+      if (e.keyCode == 39) this.right = 1;
+    });
+
+    document.addEventListener("keyup", (e) => {
+      if (e.keyCode == 38) this.up = 0;
+      if (e.keyCode == 40) this.down = 0;
+      if (e.keyCode == 37) this.left = 0;
+      if (e.keyCode == 39) this.right = 0;
+    });
+  }
+}
+
 class SceneManager {
   loadedScenes = [];
   canvas = null;
