@@ -25,6 +25,7 @@ class Scene {
 }
 
 class GameObject {
+  location = new Vector2();
   children = new Array();
 
   update(ctx, step) {
