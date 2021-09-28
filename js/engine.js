@@ -100,31 +100,62 @@ class ArrowInput extends Input {
   }
 }
 
+class UIManager {
+  uiLayers = [];
+  canvas = null;
+  ctx = null;
+
+  constructor(canvas, ctx) {
+    this.canvas = canvas;
+    this.ctx = ctx;
+  }
+
+  init() {
+    console.log("Scene Manager initialized.");
+  }
+
+  update(ctx, step) {
+    this.uiLayers.forEach((layer) => {
+      if (layer.open) layer.update(ctx, step);
+    }
+  }
+
+  addLayer(layer) {
+    if (!(layer instanceof UILayer)) {
+      return console.error("Added layer was not a UILayer.");
+    }
+    this.uiLayers.add(layer);
+  }
+}
+
+class UILayer {
+  open = true;
+
+  update(ctx, step) {
+    if (!open) return;
+  }
+}
+
 class SceneManager {
   loadedScenes = [];
   canvas = null;
   ctx = null;
 
-  constructor() {
-
+  constructor(ctx, canvas) {
+    this.canvas = canvas;
+    this.ctx = ctx;
   }
 
   init() {
-    this.ctx = window.engine.ctx;
-    this.canvas = this.ctx.canvas;
     window.requestAnimationFrame(this.update);
 
     console.log("Scene Manager initialized.");
   }
 
-  update = (step) => {
-    /*this.ctx.fillStyle = 'black';
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);*/
-
+  update(ctx, step) {
     this.loadedScenes.forEach((scene) => {
-      scene.update(this.ctx, step);
+      scene.update(ctx, step);
     });
-    window.requestAnimationFrame(this.update);
   };
 
   loadSingle(scene) {
@@ -132,9 +163,7 @@ class SceneManager {
       scene.unload();
     });
 
-    var s = this.load(scene);
-
-    this.loadedScenes = [s];
+    loadAdd(scene);
   }
 
   loadAdd(scene) {
@@ -165,10 +194,23 @@ class Engine {
     // Prevent context menu from opening.
     this.canvas.oncontextmenu = () => { return false };
 
-    this.sceneManager = new SceneManager();
+    // Construct Scene and UI managers.
+    this.sceneManager = new SceneManager(this.canvas, this.ctx);
+    this.uiManager = new UIManager(this.canvas, this.ctx);
   }
 
   init() {
     this.sceneManager.init();
+
+    window.requestAnimationFrame(this.update);
   }
+
+  update = (step) => {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    this.sceneManager.update(ctx, step);
+    this.uiManager.update(ctx, step);
+
+    window.requestAnimationFrame(this.update);
+  };
 }
