@@ -163,7 +163,7 @@ class SceneManager {
       scene.unload();
     });
 
-    loadAdd(scene);
+    this.loadAdd(scene);
   }
 
   loadAdd(scene) {
