@@ -117,7 +117,7 @@ class UIManager {
   update(ctx, step) {
     this.uiLayers.forEach((layer) => {
       if (layer.open) layer.update(ctx, step);
-    }
+    });
   }
 
   addLayer(layer) {
