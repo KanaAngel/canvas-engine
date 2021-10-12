@@ -137,17 +137,18 @@ class UILayer {
 }
 
 class SceneManager {
-  loadedScenes = [];
+  loadedScenes = new Array();
   canvas = null;
   ctx = null;
 
   constructor(ctx, canvas) {
+    this.loadedScenes = new Array();
     this.canvas = canvas;
     this.ctx = ctx;
   }
 
   init() {
-    window.requestAnimationFrame(this.update);
+    window.requestAnimationFrame(this.update.bind(this));
 
     console.log("Scene Manager initialized.");
   }
@@ -169,7 +170,7 @@ class SceneManager {
   loadAdd(scene) {
     var s = this.load(scene);
 
-    this.loadedScenes.add(s);
+    this.loadedScenes.push(s);
   }
 
   load(scene) {
@@ -208,8 +209,8 @@ class Engine {
   update = (step) => {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    this.sceneManager.update(ctx, step);
-    this.uiManager.update(ctx, step);
+    this.sceneManager.update(this.ctx, step);
+    this.uiManager.update(this.ctx, step);
 
     window.requestAnimationFrame(this.update);
   };
